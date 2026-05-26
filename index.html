@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Norte Digital | Content Management para Comercios y Pymes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --verde: #006B35;
+      --verde-vivo: #008A44;
+      --verde-claro: #e6f2ec;
+      --negro: #0f0f0f;
+      --gris-suave: #f5f5f5;
+      --blanco: #ffffff;
+      --texto: #1a1a1a;
+      --texto60: rgba(26,26,26,0.6);
+      --texto35: rgba(26,26,26,0.35);
+      --borde: rgba(0,107,53,0.15);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--blanco);
+      color: var(--texto);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--verde); color: var(--blanco); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(26px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.on { opacity: 1; transform: none; }
+    .reveal-delay { transition-delay: 0.15s; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 6%; height: 64px;
+      background: var(--blanco);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem; font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--negro); text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .logo-dot { width: 8px; height: 8px; background: var(--verde); border-radius: 50%; }
+    .nav-right { display: flex; align-items: center; gap: 2rem; }
+    .nav-link {
+      color: var(--texto60); text-decoration: none;
+      font-size: 0.82rem; transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--texto); }
+    .nav-btn {
+      background: var(--verde); color: var(--blanco);
+      padding: 0.5rem 1.2rem; border-radius: 4px;
+      font-size: 0.82rem; font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-btn:hover { background: var(--verde-vivo); transform: translateY(-1px); }
+    @media (max-width: 600px) { .nav-right .nav-link { display: none; } }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      background: var(--negro);
+      display: flex; align-items: center;
+      padding: 9rem 6% 6rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-accent {
+      position: absolute; top: 0; right: 0;
+      width: 45%; height: 100%;
+      background: linear-gradient(135deg, var(--verde) 0%, #004d26 100%);
+      clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+      opacity: 0.12;
+    }
+    .hero-accent2 {
+      position: absolute; bottom: -60px; left: -60px;
+      width: 320px; height: 320px; border-radius: 50%;
+      background: var(--verde); opacity: 0.06; filter: blur(60px);
+    }
+    .hero-content { position: relative; max-width: 780px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(0,107,53,0.25);
+      border: 1px solid rgba(0,138,68,0.4);
+      color: #4dbb80;
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 0.35rem 0.9rem;
+      border-radius: 100px; margin-bottom: 2rem;
+      animation: fadeUp 0.7s ease both;
+    }
+    .badge-dot { width: 6px; height: 6px; background: #4dbb80; border-radius: 50%; animation: pulse 2s ease infinite; }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.04; font-weight: 800;
+      color: var(--blanco); letter-spacing: -0.02em;
+      animation: fadeUp 0.7s ease 0.1s both;
+    }
+    h1 .green { color: #4dbb80; }
+    h1 .outline {
+      color: rgba(255,255,255,0.75);
+    }
+    .hero-sub {
+      margin-top: 1.8rem; font-size: 1.05rem; line-height: 1.7;
+      color: rgba(255,255,255,0.55); max-width: 520px;
+      animation: fadeUp 0.7s ease 0.2s both;
+    }
+    .hero-actions {
+      margin-top: 2.8rem;
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp 0.7s ease 0.32s both;
+    }
+    .btn-green {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: var(--verde); color: var(--blanco);
+      padding: 0.95rem 2rem; border-radius: 4px;
+      font-size: 0.85rem; font-weight: 500; text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.3s;
+    }
+    .btn-green:hover {
+      background: var(--verde-vivo); transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,107,53,0.4);
+    }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.75);
+      padding: 0.95rem 2rem; border-radius: 4px;
+      font-size: 0.85rem; text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: var(--blanco); transform: translateY(-2px); }
+    .hero-stats {
+      margin-top: 4.5rem; padding-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; gap: 3.5rem; flex-wrap: wrap;
+      animation: fadeUp 0.7s ease 0.45s both;
+    }
+    .stat-n {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem; font-weight: 800;
+      color: var(--blanco); line-height: 1; letter-spacing: -0.02em;
+    }
+    .stat-n span { color: #4dbb80; }
+    .stat-l { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 0.3rem; }
+
+    /* BASE */
+    section { padding: 7rem 6%; }
+    .label {
+      display: inline-block; font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--verde); margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      font-weight: 800; line-height: 1.08;
+      color: var(--negro); letter-spacing: -0.02em;
+    }
+    h2 .g { color: var(--verde); }
+    .lead { margin-top: 1rem; font-size: 1rem; line-height: 1.72; color: var(--texto60); max-width: 500px; }
+
+    /* PROPUESTA */
+    #propuesta { background: var(--blanco); }
+    .prop-grid {
+      margin-top: 4rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5px; background: rgba(0,0,0,0.07);
+      border: 1.5px solid rgba(0,0,0,0.07);
+    }
+    .prop-card {
+      background: var(--blanco); padding: 2.5rem 2rem;
+      transition: background 0.25s; position: relative;
+    }
+    .prop-card:hover { background: var(--verde-claro); }
+    .prop-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 0; background: var(--verde);
+      transition: height 0.3s ease;
+    }
+    .prop-card:hover::before { height: 100%; }
+    .prop-num {
+      font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800;
+      color: rgba(0,107,53,0.1); line-height: 1; margin-bottom: 1.2rem; letter-spacing: -0.03em;
+    }
+    .prop-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700;
+      color: var(--negro); margin-bottom: 0.7rem;
+    }
+    .prop-card p { font-size: 0.88rem; line-height: 1.68; color: var(--texto60); }
+
+    /* HERRAMIENTAS */
+    #tools { background: var(--gris-suave); }
+    .tools-row {
+      margin-top: 3.5rem; display: flex; flex-wrap: wrap; gap: 1rem;
+    }
+    .tool-chip {
+      display: flex; align-items: center; gap: 0.9rem;
+      background: var(--blanco); border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 6px; padding: 1.1rem 1.6rem;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      flex: 1; min-width: 190px;
+    }
+    .tool-chip:hover {
+      border-color: var(--verde); transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,107,53,0.1);
+    }
+    .tool-chip-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .tool-chip-name { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--negro); }
+    .tool-chip-desc { font-size: 0.78rem; color: var(--texto60); margin-top: 0.15rem; line-height: 1.4; }
+    .human-bar {
+      margin-top: 2.5rem; background: var(--negro); color: var(--blanco);
+      padding: 1.8rem 2.2rem; border-radius: 6px;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .human-bar-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .human-bar p { font-size: 0.92rem; line-height: 1.65; }
+    .human-bar strong { color: #4dbb80; font-weight: 500; }
+
+    /* CLIENTES */
+    #clientes { background: var(--blanco); }
+    .views-headline {
+      margin-top: 2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 700; color: var(--negro);
+      line-height: 1.3;
+    }
+    .views-headline .g { color: var(--verde); }
+    .clientes-grid {
+      margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.8rem;
+    }
+    .cliente-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 0.55rem 1.1rem; border-radius: 100px;
+      font-size: 0.88rem; color: var(--texto);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .cliente-tag:hover { border-color: var(--verde); background: var(--verde-claro); }
+    .cliente-dot { width: 5px; height: 5px; background: var(--verde); border-radius: 50%; flex-shrink: 0; }
+
+    /* PRECIOS */
+    #precios { background: var(--gris-suave); }
+    .precios-grid {
+      margin-top: 4rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+      gap: 1.2rem;
+    }
+    .plan {
+      background: var(--blanco); border: 1.5px solid rgba(0,0,0,0.08);
+      border-radius: 8px; padding: 2.5rem 2rem;
+      display: flex; flex-direction: column; position: relative;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+    }
+    .plan:hover { transform: translateY(-5px); box-shadow: 0 16px 45px rgba(0,0,0,0.08); border-color: rgba(0,107,53,0.2); }
+    .plan.featured { border-color: var(--verde); background: var(--negro); }
+    .plan-badge {
+      position: absolute; top: -1px; left: 2rem;
+      background: var(--verde); color: var(--blanco);
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.28rem 0.75rem;
+      border-radius: 0 0 6px 6px;
+    }
+    .plan-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--texto); margin-bottom: 1.2rem; }
+    .plan.featured .plan-name { color: rgba(255,255,255,0.6); }
+    .plan-price {
+      font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800;
+      line-height: 1; letter-spacing: -0.03em; color: var(--negro);
+    }
+    .plan.featured .plan-price { color: var(--blanco); }
+    .plan-price sup { font-size: 1.1rem; vertical-align: super; font-weight: 600; }
+    .plan-period { font-size: 0.75rem; color: var(--texto60); margin-top: 0.3rem; margin-bottom: 1.8rem; }
+    .plan.featured .plan-period { color: rgba(255,255,255,0.4); }
+    .plan-sep { height: 1px; background: rgba(0,0,0,0.07); margin-bottom: 1.5rem; }
+    .plan.featured .plan-sep { background: rgba(255,255,255,0.1); }
+    .plan-list { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 0.7rem; }
+    .plan-list li {
+      font-size: 0.87rem; color: var(--texto60);
+      display: flex; gap: 0.65rem; align-items: flex-start; line-height: 1.45;
+    }
+    .plan.featured .plan-list li { color: rgba(255,255,255,0.6); }
+    .plan-list li::before {
+      content: ''; width: 16px; height: 16px; flex-shrink: 0; margin-top: 0.05rem;
+      background: var(--verde-claro) url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%23006B35' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
+      border-radius: 50%;
+    }
+    .plan.featured .plan-list li::before {
+      background-color: rgba(0,107,53,0.3);
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%234dbb80' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    .plan-btn {
+      margin-top: 2rem; display: block; text-align: center;
+      border: 1.5px solid rgba(0,107,53,0.3); color: var(--verde);
+      background: transparent; padding: 0.85rem; border-radius: 5px;
+      font-size: 0.82rem; font-weight: 500; text-decoration: none;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .plan-btn:hover { background: var(--verde); color: var(--blanco); border-color: var(--verde); }
+    .plan.featured .plan-btn { background: var(--verde); color: var(--blanco); border-color: var(--verde); }
+    .plan.featured .plan-btn:hover { background: var(--verde-vivo); }
+
+    .addon {
+      margin-top: 1.5rem; padding: 1.6rem 2rem;
+      border: 1.5px dashed rgba(0,107,53,0.25);
+      border-radius: 8px; background: var(--blanco);
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .addon-i { font-size: 1.5rem; flex-shrink: 0; }
+    .addon-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--negro); }
+    .addon-desc { font-size: 0.83rem; color: var(--texto60); margin-top: 0.2rem; }
+    .addon-val { margin-left: auto; font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--verde); white-space: nowrap; }
+
+    /* PROCESO */
+    #proceso { background: var(--negro); }
+    #proceso .label { color: #4dbb80; }
+    #proceso h2 { color: var(--blanco); }
+    #proceso h2 .g { color: #4dbb80; }
+    .pasos {
+      margin-top: 4rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .paso { padding: 2.5rem 2rem; border-right: 1px solid rgba(255,255,255,0.07); }
+    .paso:last-child { border-right: none; }
+    .paso-n {
+      font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800;
+      color: rgba(0,107,53,0.18); line-height: 1; margin-bottom: 1.2rem; letter-spacing: -0.03em;
+    }
+    .paso h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--blanco); margin-bottom: 0.6rem; }
+    .paso p { font-size: 0.84rem; line-height: 1.65; color: rgba(255,255,255,0.45); }
+    @media (max-width: 700px) {
+      .pasos { grid-template-columns: 1fr 1fr; }
+      .paso { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+      .paso:last-child { border-bottom: none; }
+    }
+    @media (max-width: 420px) { .pasos { grid-template-columns: 1fr; } }
+
+    /* CTA */
+    #cta {
+      background: var(--verde); padding: 7rem 6%;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-circles {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(circle 300px at 10% 80%, rgba(255,255,255,0.06) 0%, transparent 70%),
+        radial-gradient(circle 200px at 90% 20%, rgba(0,0,0,0.08) 0%, transparent 60%);
+    }
+    #cta h2 { color: var(--blanco); max-width: 600px; margin: 0 auto; font-size: clamp(2rem, 4.5vw, 3.4rem); }
+    #cta .lead { color: rgba(255,255,255,0.7); margin: 1rem auto 0; text-align: center; }
+    .cta-btns { margin-top: 2.8rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .btn-white {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--blanco); color: var(--verde);
+      padding: 1rem 2.2rem; border-radius: 5px;
+      font-size: 0.88rem; font-weight: 600; text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.3s;
+    }
+    .btn-white:hover { background: var(--verde-claro); transform: translateY(-2px); box-shadow: 0 12px 35px rgba(0,0,0,0.2); }
+
+    /* FOOTER */
+    footer {
+      background: var(--negro); padding: 2rem 6%;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800;
+      color: var(--blanco); text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem; letter-spacing: -0.01em;
+    }
+    footer p { font-size: 0.73rem; color: rgba(255,255,255,0.3); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#hero" class="logo"><span class="logo-dot"></span>Norte Digital</a>
+    <div class="nav-right">
+      <a href="#propuesta" class="nav-link">Servicios</a>
+      <a href="#precios" class="nav-link">Precios</a>
+      <a href="#clientes" class="nav-link">Clientes</a>
+      <a href="https://wa.me/5491137693774?text=Hola%20Alex%2C%20tengo%20inter%C3%A9s%20en%20generar%20reels%2C%20coordinamos%20un%20meet%3F" class="nav-btn" target="_blank">Contacto</a>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-accent"></div>
+    <div class="hero-accent2"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="badge-dot"></span>Content Management para pymes y comercios</div>
+      <h1>
+        Contenido que<br>
+        <span class="green">mueve tu negocio.</span><br>
+        <span class="outline">Cada semana.</span>
+      </h1>
+      <p class="hero-sub">
+        Producción de reels, fotografía y copy para pymes y comercios. Contenido que atrae clientes nuevos, genera alcance real y construye presencia en redes.
+      </p>
+      <div class="hero-actions">
+        <a href="https://wa.me/5491137693774?text=Hola%20Alex%2C%20tengo%20inter%C3%A9s%20en%20generar%20reels%2C%20coordinamos%20un%20meet%3F" class="btn-green" target="_blank">
+          <svg width="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.857L0 24l6.335-1.51A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.018-1.378l-.36-.214-3.729.978.995-3.636-.235-.374A9.818 9.818 0 0112 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
+          Escribinos por WhatsApp
+        </a>
+        <a href="#precios" class="btn-ghost">Ver planes y precios</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-n">Mill.<span>+</span></div>
+          <div class="stat-l">Views generados</div>
+        </div>
+        <div>
+          <div class="stat-n">7<span>+</span></div>
+          <div class="stat-l">Marcas gestionadas</div>
+        </div>
+        <div>
+          <div class="stat-n">100<span>%</span></div>
+          <div class="stat-l">Contenido a medida</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="propuesta">
+    <div class="reveal">
+      <span class="label">Lo que hacemos</span>
+      <h2>Del local a las <span class="g">redes,</span><br>sin que te compliques</h2>
+      <p class="lead">Norte Digital gestiona todo el contenido para que el negocio se enfoque en lo suyo.</p>
+    </div>
+    <div class="prop-grid reveal reveal-delay">
+      <div class="prop-card">
+        <div class="prop-num">01</div>
+        <h3>Reels que enganchan</h3>
+        <p>Grabación y edición de reels para Instagram y TikTok. Cada video con gancho, ritmo y un mensaje claro para llegar a más gente.</p>
+      </div>
+      <div class="prop-card">
+        <div class="prop-num">02</div>
+        <h3>Fotos que venden</h3>
+        <p>Sets de fotografía de productos, local o equipo con edición profesional. Imágenes que hacen que la gente pare el scroll.</p>
+      </div>
+      <div class="prop-card">
+        <div class="prop-num">03</div>
+        <h3>Copy para cada pieza</h3>
+        <p>Textos para pies de foto, historias y bio en el tono de la marca. Sin sonar genérico, sin sonar a publicidad.</p>
+      </div>
+      <div class="prop-card">
+        <div class="prop-num">04</div>
+        <h3>Entrega semanal garantizada</h3>
+        <p>Calendario editorial organizado y material listo para publicar cada semana. El cliente decide cuándo subir, Norte Digital se encarga del resto.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <div class="reveal">
+      <span class="label">Herramientas</span>
+      <h2>Equipamiento <span class="g">profesional</span></h2>
+      <p class="lead">No es solo tener las apps. Es saber cuándo y cómo usarlas para que el contenido del cliente se vea mejor que el de la competencia.</p>
+    </div>
+    <div class="tools-row reveal reveal-delay">
+      <div class="tool-chip">
+        <span class="tool-chip-icon">📱</span>
+        <div>
+          <div class="tool-chip-name">iPhone 17 Pro Max</div>
+          <div class="tool-chip-desc">Cámara cinematográfica en cada visita</div>
+        </div>
+      </div>
+      <div class="tool-chip">
+        <span class="tool-chip-icon">🎞️</span>
+        <div>
+          <div class="tool-chip-name">CapCut Pro</div>
+          <div class="tool-chip-desc">Edición de video para cada formato</div>
+        </div>
+      </div>
+      <div class="tool-chip">
+        <span class="tool-chip-icon">🎨</span>
+        <div>
+          <div class="tool-chip-name">Canva</div>
+          <div class="tool-chip-desc">Piezas gráficas con identidad de marca</div>
+        </div>
+      </div>
+      <div class="tool-chip">
+        <span class="tool-chip-icon">📷</span>
+        <div>
+          <div class="tool-chip-name">Lightroom</div>
+          <div class="tool-chip-desc">Color consistente en cada foto</div>
+        </div>
+      </div>
+      <div class="tool-chip">
+        <span class="tool-chip-icon">🤖</span>
+        <div>
+          <div class="tool-chip-name">Inteligencia Artificial</div>
+          <div class="tool-chip-desc">Ideas y optimización más rápido</div>
+        </div>
+      </div>
+    </div>
+    <div class="human-bar reveal">
+      <span class="human-bar-icon">🧠</span>
+      <p>La IA acelera el trabajo, pero cada decisión creativa pasa por criterio humano. <strong>Eso es lo que hace que el contenido suene a la marca del cliente y no a cualquiera.</strong></p>
+    </div>
+  </section>
+
+  <section id="clientes">
+    <div class="reveal">
+      <span class="label">Experiencia</span>
+      <h2>Marcas y proyectos <span class="g">reales</span></h2>
+      <p class="views-headline reveal">Millones de views generados para:</p>
+    </div>
+    <div class="clientes-grid reveal reveal-delay">
+      <div class="cliente-tag"><span class="cliente-dot"></span>Luis Rosales</div>
+      <div class="cliente-tag"><span class="cliente-dot"></span>Eduardo Marty</div>
+      <div class="cliente-tag"><span class="cliente-dot"></span>El Virus no tiene Corona</div>
+      <div class="cliente-tag"><span class="cliente-dot"></span>FRI Latam</div>
+      <div class="cliente-tag"><span class="cliente-dot"></span>Diego Hormazábal</div>
+      <div class="cliente-tag"><span class="cliente-dot"></span>Dick Morris Digital Academy</div>
+      <div class="cliente-tag"><span class="cliente-dot"></span>La Opinión de Pergamino</div>
+    </div>
+  </section>
+
+  <section id="precios">
+    <div class="reveal">
+      <span class="label">Planes</span>
+      <h2>Precios <span class="g">claros</span> desde el arranque</h2>
+      <p class="lead">Empezá con un reel de prueba sin compromiso. Después se elige el plan que mejor se adapta al negocio.</p>
+    </div>
+    <div class="precios-grid reveal reveal-delay">
+
+      <div class="plan">
+        <div class="plan-name">Reel de prueba</div>
+        <div class="plan-price"><sup>$</sup>20.000</div>
+        <div class="plan-period">pago único, sin ataduras</div>
+        <div class="plan-sep"></div>
+        <ul class="plan-list">
+          <li>1 reel completo grabado y editado</li>
+          <li>Listo para publicar</li>
+          <li>Sin compromiso de continuidad</li>
+        </ul>
+        <a href="https://wa.me/5491137693774?text=Hola%20Alex%2C%20tengo%20inter%C3%A9s%20en%20generar%20reels%2C%20coordinamos%20un%20meet%3F" class="plan-btn" target="_blank">Arrancar con esto</a>
+      </div>
+
+      <div class="plan featured">
+        <div class="plan-badge">Más elegido</div>
+        <div class="plan-name">Plan Esencial</div>
+        <div class="plan-price"><sup>$</sup>75.000</div>
+        <div class="plan-period">por mes</div>
+        <div class="plan-sep"></div>
+        <ul class="plan-list">
+          <li>4 reels por mes</li>
+          <li>Set de 5 fotos editadas</li>
+          <li>Grabación y edición incluidas</li>
+          <li>Entrega semanal</li>
+          <li>Coordinación por WhatsApp</li>
+        </ul>
+        <a href="https://wa.me/5491137693774?text=Hola%20Alex%2C%20tengo%20inter%C3%A9s%20en%20generar%20reels%2C%20coordinamos%20un%20meet%3F" class="plan-btn" target="_blank">Lo quiero</a>
+      </div>
+
+      <div class="plan">
+        <div class="plan-name">Plan Completo</div>
+        <div class="plan-price"><sup>$</sup>120.000</div>
+        <div class="plan-period">por mes</div>
+        <div class="plan-sep"></div>
+        <ul class="plan-list">
+          <li>6 reels por mes</li>
+          <li>Set de 10 fotos editadas</li>
+          <li>Grabación y edición incluidas</li>
+          <li>Presencia semanal garantizada</li>
+          <li>Coordinación por WhatsApp</li>
+          <li>Prioridad en agenda</li>
+        </ul>
+        <a href="https://wa.me/5491137693774?text=Hola%20Alex%2C%20tengo%20inter%C3%A9s%20en%20generar%20reels%2C%20coordinamos%20un%20meet%3F" class="plan-btn" target="_blank">Consultame</a>
+      </div>
+
+    </div>
+    <div class="addon reveal">
+      <span class="addon-i">✍️</span>
+      <div>
+        <div class="addon-name">Add-on: Copy sugerido</div>
+        <div class="addon-desc">Textos para pies de foto e historias, listos para copiar y pegar. Se suma a cualquier plan.</div>
+      </div>
+      <div class="addon-val">+ $5.000</div>
+    </div>
+  </section>
+
+  <section id="proceso">
+    <div class="reveal">
+      <span class="label">Cómo arrancamos</span>
+      <h2>Simple y <span class="g">sin vueltas</span></h2>
+    </div>
+    <div class="pasos reveal reveal-delay">
+      <div class="paso">
+        <div class="paso-n">01</div>
+        <h3>Primer contacto</h3>
+        <p>El negocio nos cuenta de qué se trata por WhatsApp. Respondemos en menos de 24 horas.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-n">02</div>
+        <h3>Charla de 15 minutos</h3>
+        <p>Una llamada corta para entender la marca y qué se quiere mostrar en redes.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-n">03</div>
+        <h3>Reel de prueba</h3>
+        <p>Se produce una sola pieza para que el cliente vea el resultado antes de cualquier compromiso.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-n">04</div>
+        <h3>Contenido cada semana</h3>
+        <p>Con el plan activo, el material llega listo para publicar de forma regular y sin demoras.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="cta">
+    <div class="cta-circles"></div>
+    <div class="reveal">
+      <h2>¿Empezamos con un reel de prueba?</h2>
+      <p class="lead">Sin contratos largos. Sin letra chica. Solo contenido que funciona para el negocio.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/5491137693774?text=Hola%20Alex%2C%20tengo%20inter%C3%A9s%20en%20generar%20reels%2C%20coordinamos%20un%20meet%3F" class="btn-white" target="_blank">
+          <svg width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.857L0 24l6.335-1.51A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.018-1.378l-.36-.214-3.729.978.995-3.636-.235-.374A9.818 9.818 0 0112 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
+          Escribinos por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="#hero" class="footer-logo"><span class="logo-dot"></span>Norte Digital</a>
+    <p>Content Management para pymes y comercios &copy; 2025</p>
+  </footer>
+
+  <script>
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>
